@@ -15,16 +15,19 @@ def load_csv_data(file_path: str) -> pd.DataFrame:
     Returns a dataframe with the input csv data; 
     returns empty dataframe if data is not available or error exists.
     """
-    df = pd.read_csv(file_path)
-    df_columns = set(df.columns)
-    required_columns = {"formula", "start_x", "end_x"}
-    missing_columns = required_columns - df_columns
+    
     
     try:
+        df = pd.read_csv(file_path)
+        df_columns = set(df.columns)
+        required_columns = {"formula", "start_x", "end_x"}
+        missing_columns = required_columns - df_columns
+        
         if not required_columns.issubset(df_columns):
             print(f"Missing column(s): {missing_columns}")
             return pd.DataFrame()
-        return df    
+        return df  
+      
     except FileNotFoundError:
         print(f"Invalida file path.")
         return pd.DataFrame()
