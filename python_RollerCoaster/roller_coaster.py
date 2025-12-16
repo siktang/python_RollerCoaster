@@ -74,6 +74,11 @@ def validate_y_continuity(prev_formula, current_formula, prev_end, current_start
     '''
     return prev_formula.subs(x, prev_end) == current_formula.subs(x, current_start)
 
+def validate_smoothness(prev_formula, current_formula, prev_end, current_start):
+    '''
+    Returns true if the derivatives are equal at the meeting points between previous and current formulas.
+    '''
+    return sp.diff(prev_formula, x).subs(x, prev_end) == sp.diff(current_formula, x).subs(x, current_start)
 
 
 # then create a function to combine all the above validations to loop through segments
@@ -83,6 +88,20 @@ def validate_segments(segments):
             sys.exit('Formula is not valid')
         elif validate_ending(item[1], item[2]) is False: 
             sys.exit('End point must be larger than start point.')
+    
+    for i in range(1, len(segments)):
+        prev_formula, _, prev_end = segments[i-1]
+        current_formula, current_start, _ = segments[i]
+        if validate_x_continuity(prev_end, current_start) is False:
+            sys.exit('There are gaps in x domains.')
+        elif validate_y_continuity(prev_formula, current_formula, prev_end, current_start) is False:
+            sys.exit('Graphs are not connecting vertically.')
+        elif validate_smoothness(prev_formula, current_formula, prev_end, current_start) is False:
+            sys.exit('The transition is not smooth due to different derivative values.')
+    
+    return True
+
+
         
 
     
