@@ -1,8 +1,14 @@
 import pandas as pd
 import sympy as sp
+import numpy as np
+import math
+import matplotlib.pyplot as plt
 import sys
 
 x = sp.symbols('x')
+
+csvFile = input('Enter file name for CSV:')
+svgFile = input('Enter file name for SVG:')
 
 def load_csv_data(file_path: str) -> pd.DataFrame:
     """
@@ -33,10 +39,6 @@ def create_segments(df: pd.DataFrame) -> list:
     '''
     Returns a list of segments in sympy expressions.
     '''
-
-    # loop through each row of df
-    # df = load_csv_data(csvPath)
-    # only run the following loop when df is truthy
     segments = []
 
     for _, row in df.iterrows():
@@ -100,6 +102,17 @@ def validate_segments(segments):
             sys.exit('The transition is not smooth due to different derivative values.')
     
     return True
+
+def generate_graph(segments): 
+    plt.figure()
+
+    for item in segments:
+        f = sp.lambdify(x, item[0], "numpy")
+        xs = np.linspace(float(item[1]), float(item[2]), 300)
+        ys = f(xs)
+        plt.plot(xs, ys)
+
+    plt.savefig(svgFile, format="svg")
 
 
         
