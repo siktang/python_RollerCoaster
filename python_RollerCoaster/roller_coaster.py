@@ -7,16 +7,14 @@ import sys
 
 x = sp.symbols('x')
 
-csvFile = input('Enter file name for CSV:')
+csvFile = input('Enter file path for CSV:')
 svgFile = input('Enter file name for SVG:')
 
 def load_csv_data(file_path: str) -> pd.DataFrame:
     """
     Returns a dataframe with the input csv data; 
     returns empty dataframe if data is not available or error exists.
-    """
-    
-    
+    """    
     try:
         df = pd.read_csv(file_path)
         df_columns = set(df.columns)
@@ -90,19 +88,19 @@ def validate_smoothness(prev_formula, current_formula, prev_end, current_start):
 def validate_segments(segments):
     for item in segments: 
         if validate_formula(item[0]) is False: 
-            sys.exit('Formula is not valid')
+            sys.exit("Formula is not valid")
         elif validate_ending(item[1], item[2]) is False: 
-            sys.exit('End point must be larger than start point.')
+            sys.exit("End point must be larger than start point.")
     
     for i in range(1, len(segments)):
         prev_formula, _, prev_end = segments[i-1]
         current_formula, current_start, _ = segments[i]
         if validate_x_continuity(prev_end, current_start) is False:
-            sys.exit('There are gaps in x domains.')
+            sys.exit("There are gaps in x domains.")
         elif validate_y_continuity(prev_formula, current_formula, prev_end, current_start) is False:
-            sys.exit('Graphs are not connecting vertically.')
+            sys.exit("Graphs are not connecting vertically.")
         elif validate_smoothness(prev_formula, current_formula, prev_end, current_start) is False:
-            sys.exit('The transition is not smooth due to different derivative values.')
+            sys.exit("The transition is not smooth due to different derivative values.")
     
     return True
 
@@ -114,9 +112,24 @@ def generate_graph(segments):
         xs = np.linspace(float(item[1]), float(item[2]), 300)
         ys = f(xs)
         plt.plot(xs, ys)
+    
+    plt.ylabel("f(x)")
 
     plt.savefig(svgFile, format="svg")
 
+def main(): 
+    df = load_csv_data(csvFile)
+
+    if not df:
+        sys.exit("No data available.")
+
+    segments = create_segments(df)
+
+    validate_segments(segments)
+    generate_graph(segments)
+
+if __name__ == "__main__":
+    main()
 
         
 
