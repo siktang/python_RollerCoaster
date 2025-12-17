@@ -83,10 +83,10 @@ def validate_smoothness(prev_formula: object, current_formula: object, prev_end:
 
 # Combine all the above validations to loop through segments
 def validate_segments(segments):
-    for item in segments: 
-        if not validate_formula(item[0]): 
+    for formula, start_x, end_x in segments: 
+        if not validate_formula(formula): 
             sys.exit("Formula is not valid")
-        elif not validate_ending(item[1], item[2]): 
+        elif not validate_ending(start_x, end_x): 
             sys.exit("End point must be larger than start point.")
     
     for i in range(1, len(segments)):
