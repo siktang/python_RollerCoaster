@@ -24,7 +24,7 @@ def load_csv_data(file_path: str) -> pd.DataFrame:
         return df  
       
     except FileNotFoundError:
-        print(f"Invalida file path.")
+        print("Invalida file path.")
         return pd.DataFrame()
     except pd.errors.EmptyDataError:
         print("File is empty.")
@@ -126,7 +126,7 @@ def main():
     df = load_csv_data(csvFile)
 
     if df.empty:
-        sys.exit("No data available.")
+        sys.exit("An error has occured.")
 
     segments = create_segments(df)
 
